@@ -1,0 +1,162 @@
+#include <stdio.h>
+#include <string.h>
+
+// Definição da estrutura para armazenar os dados da indústria
+struct Industria {
+    char nomeResponsavel[100];
+    char nomeEmpresa[100];
+    char cnpj[20];
+    char razaoSocial[100];
+    char nomeFantasia[100];
+    char telefone[15];
+    char endereco[200];
+    char email[100];
+    char dataAbertura[15];
+    char tipoInsumo[50];
+    float quantidadeTratada;
+    // Adicione outros campos relevantes aqui
+};
+
+// Função para realizar o login
+int fazerLogin() {
+    char usuario[50];
+    char senha[50];
+    
+    printf("Informe o usuário: ");
+    scanf("%s", usuario);
+    printf("Informe a senha: ");
+    scanf("%s", senha);
+    
+    if (strcmp(usuario, "admin") == 0 && strcmp(senha, "1234") == 0) {
+        return 1; // Login bem-sucedido
+    }
+    
+    return 0; // Login falhou
+}
+
+// Função para cadastrar a indústria
+void cadastrarIndustria(struct Industria *cadastroIndustria, int *totalIndustrias) {
+    if (*totalIndustrias < 100) {
+        printf("Informe o nome do responsável: ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].nomeResponsavel);
+        printf("Informe o nome da empresa: ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].nomeEmpresa);
+        printf("Informe o CNPJ: XX.XXX.XXX/XXXX-XX ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].cnpj);
+        printf("Informe a razão social: ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].razaoSocial);
+        printf("Informe o nome fantasia: ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].nomeFantasia);
+        printf("Informe o telefone: ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].telefone);
+        printf("Informe o endereço (rua, número, bairro, cidade, estado e CEP): ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].endereco);
+        printf("Informe o e-mail: ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].email);
+        printf("Informe a data de abertura (XX/XX/XXXX): ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].dataAbertura);
+        printf("Informe o tipo de insumo: ");
+        scanf("%s", cadastroIndustria[*totalIndustrias].tipoInsumo);
+        printf("Informe a quantidade tratada: ");
+        scanf("%f", &cadastroIndustria[*totalIndustrias].quantidadeTratada);
+        // Implemente a lógica de cadastro completa aqui
+        (*totalIndustrias)++;
+        printf("Indústria cadastrada com sucesso!\n");
+    } else {
+        printf("Limite de indústrias atingido.\n");
+    }
+}
+
+// Função para gerar relatório de atividades e salvar em arquivo .txt
+void gerarRelatorio(struct Industria *cadastroIndustria, int totalIndustrias) {
+    char nomeArquivo[50];
+    printf("Informe o nome do arquivo de relatório: ");
+    scanf("%s", nomeArquivo);
+    
+    FILE *relatorioArquivo;
+    relatorioArquivo = fopen(nomeArquivo, "w");
+
+    if (relatorioArquivo == NULL) {
+        printf("Erro ao criar o arquivo de relatório.\n");
+        return;
+    }
+
+    fprintf(relatorioArquivo, "Relatório de Atividades:\n");
+    for (int i = 0; i < totalIndustrias; i++) {
+        fprintf(relatorioArquivo, "Indústria %d\n", i + 1);
+        fprintf(relatorioArquivo, "Responsável: %s\n", cadastroIndustria[i].nomeResponsavel);
+        fprintf(relatorioArquivo, "Empresa: %s\n", cadastroIndustria[i].nomeEmpresa);
+        fprintf(relatorioArquivo, "CNPJ: %s\n", cadastroIndustria[i].cnpj);
+        fprintf(relatorioArquivo, "Razão Social: %s\n", cadastroIndustria[i].razaoSocial);
+        fprintf(relatorioArquivo, "Nome Fantasia: %s\n", cadastroIndustria[i].nomeFantasia);
+        fprintf(relatorioArquivo, "Telefone: %s\n", cadastroIndustria[i].telefone);
+        fprintf(relatorioArquivo, "Endereço: %s\n", cadastroIndustria[i].endereco);
+        fprintf(relatorioArquivo, "E-mail: %s\n", cadastroIndustria[i].email);
+        fprintf(relatorioArquivo, "Data de Abertura: %s\n", cadastroIndustria[i].dataAbertura);
+        fprintf(relatorioArquivo, "Tipo de Insumo: %s\n", cadastroIndustria[i].tipoInsumo);
+        fprintf(relatorioArquivo, "Quantidade Tratada: %.2f\n", cadastroIndustria[i].quantidadeTratada);
+        // Adicione outros campos relevantes aqui
+        fprintf(relatorioArquivo, "\n");
+    }
+
+    fclose(relatorioArquivo);
+    printf("Relatório gerado e salvo no arquivo '%s'.txt\n", nomeArquivo);
+}
+
+// Função para exibir o menu inicial
+void menuInicial() {
+    system("clear"); // Para sistemas Unix-like (Linux, MacOS)
+    fflush(stdin);
+    int opcao = 0, j;
+    printf("+++++++++++++++++++++++++++++++++++++++\n");
+    printf("+            BEM VINDO(A)!            +\n");
+    printf("+         SISTEMA DE CADASTRO         +\n");
+    printf("+            DE INDÚSTRIA             +\n");
+    printf("+++++++++++++++++++++++++++++++++++++++\n");
+
+    printf("\nO que deseja?\n");
+    printf("\n[1] Acessar o menu principal\n[2] Sair do programa\n\nOpção Escolhida: ");
+    scanf("%d", &j);
+}
+
+int main() {
+    struct Industria cadastroIndustria[100]; // Array de estruturas para armazenar os dados das indústrias
+    int totalIndustrias = 0; // Número total de indústrias cadastradas
+    int usuarioLogado = 0;
+
+    menuInicial(); // Exibir o menu inicial no início do programa
+
+    while (1) {
+        if (!usuarioLogado) {
+            usuarioLogado = fazerLogin();
+            if (!usuarioLogado) {
+                printf("Login falhou. Tente novamente.\n");
+                continue;
+            }
+        }
+
+        printf("Escolha uma opção:\n");
+        printf("1- Cadastrar indústria\n");
+        printf("2- Gerar relatório de atividades\n");
+        printf("3- Sair\n");
+
+        int opcao;
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                cadastrarIndustria(cadastroIndustria, &totalIndustrias);
+                break;
+            case 2:
+                gerarRelatorio(cadastroIndustria, totalIndustrias);
+                break;
+            case 3:
+                printf("Saindo do sistema. Até logo!\n");
+                return 0;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    }
+     
+    return 0;
+}
